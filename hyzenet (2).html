@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Nett</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/vMrMruh.png">
+<link rel="apple-touch-icon" href="https://i.imgur.com/zkiiqRf.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg-primary:#1f1f23;
+  --bg-secondary:#27272b;
+  --bg-tertiary:#29292d;
+  --text-primary:#ffffff;
+  --text-secondary:#cccccc;
+  --muted:#8a9bbf;
+  --border-color:rgba(255,255,255,0.085);
+  --accent:#3B5FFE;
+  --button-bg:#27272b;
+  --button-hover:#3a3a3e;
+  --msg-me-bg:#3B5FFE;
+  --msg-them-bg:#2a2a2e;
+  --safe-area-bottom:env(safe-area-inset-bottom,0px);
+  --safe-area-top:env(safe-area-inset-top,0px);
+  --pfp-grey:#9aa0a6;
+  --c-red:#C0504A;
+  --c-orange:#C07B28;
+  --c-yellow:#C2A83C;
+  --c-green:#3E7D4E;
+  --c-blue:#2E51E2;
+  --c-purple:#6E54B3;
+}
+
+body.light-mode{
+  --bg-primary:#efeee8;
+  --bg-secondary:#efeee8;
+  --bg-tertiary:#efeee8;
+  --text-primary:#3B5FFE;
+  --text-secondary:#3B5FFE;
+  --muted:#6b77a8;
+  --border-color:#d5d5d5;
+  --accent:#3B5FFE;
+  --button-bg:#e0e0e0;
+  --button-hover:#d6d6d6;
+  --msg-me-bg:#3B5FFE;
+  --msg-them-bg:#ffffff;
+  --pfp-grey:#b7b4ac;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  height:100vh;height:100dvh;
+  display:flex;flex-direction:column;
+  overflow:hidden;position:fixed;
+  width:100%;top:0;left:0;
+  transition:background .3s ease,color .3s ease;
+  padding-top:var(--safe-area-top);
+}
+
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%,rgba(255,255,255,.15),transparent),
+    radial-gradient(1px 1px at 60% 70%,rgba(255,255,255,.1),transparent),
+    radial-gradient(1px 1px at 50% 50%,rgba(255,255,255,.08),transparent),
+    radial-gradient(.5px .5px at 80% 10%,rgba(255,255,255,.1),transparent),
+    radial-gradient(1.5px 1.5px at 90% 60%,rgba(255,255,255,.15),transparent);
+  background-size:200px 200px,250px 250px,300px 300px,350px 350px,400px 400px;
+  animation:twinkle 8s ease-in-out infinite alternate;
+  pointer-events:none;z-index:0;opacity:1;
+}
+body.light-mode::before{opacity:0}
+@keyframes twinkle{0%{opacity:.4}50%{opacity:.6}100%{opacity:.5}}
+
+button,input,textarea{font-family:inherit}
+
+/* ========== LOADER (HyzeNet text brand) ========== */
+.loading-screen{
+  position:fixed;inset:0;background:var(--bg-primary);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  z-index:10000;transition:opacity .5s,visibility .5s;
+}
+.loading-screen.hidden{opacity:0;visibility:hidden}
+.loader-brand{font-size:52px;font-weight:800;letter-spacing:.5px}
+.loader-brand .hyze{color:var(--text-primary)}
+.loader-brand .net{color:var(--accent)}
+.loader-bottom{position:fixed;left:0;right:0;bottom:64px;display:flex;justify-content:center}
+.loader-ring{width:34px;height:34px;border-radius:50%;border:3px solid var(--border-color);border-top-color:var(--accent);animation:loader-spin .8s linear infinite}
+@keyframes loader-spin{to{transform:rotate(360deg)}}
+
+/* ========== SCREEN SYSTEM ========== */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg-primary);z-index:100}
+.screen.active{display:flex}
+
+/* ========== AUTH ========== */
+.auth-container{background:var(--bg-primary);z-index:200}
+.auth-page{position:relative;z-index:1;display:flex;height:100%;align-items:center;justify-content:center;padding:32px 24px}
+.auth-card{width:100%;max-width:390px}
+.auth-card-logo{display:flex;justify-content:center;margin-bottom:20px}
+.auth-card-logo img{width:80px;height:80px;object-fit:contain;border-radius:20px}
+.auth-card h2{font-size:23px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--text-primary)}
+.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+.auth-tabs{display:flex;background:var(--accent);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:3px;margin-bottom:20px;gap:3px}
+.auth-tab{flex:1;padding:8px;border:none;background:transparent;border-radius:8px;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.auth-tab.active{background:#fff;color:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.auth-field{margin-bottom:13px}
+.auth-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.auth-input-wrap{position:relative}
+.auth-field-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;transition:color .2s}
+.auth-input-wrap:focus-within .auth-field-icon{color:var(--accent)}
+.auth-input{width:100%;padding:10.5px 14px 10.5px 38px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:13.5px;outline:none;transition:all .2s}
+.auth-input::placeholder{color:var(--muted)}
+.auth-input:focus{border-color:var(--accent);background:var(--bg-tertiary)}
+.auth-pwt{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0;transition:color .2s}
+.auth-pwt:hover{color:var(--text-primary)}
+.auth-submit-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;transition:all .25s;margin-bottom:10px}
+.auth-submit-btn:hover{filter:brightness(1.15)}
+.auth-submit-btn:active{transform:scale(.98);filter:brightness(.9)}
+.auth-submit-btn.loading .auth-submit-label{display:none}
+.auth-submit-spinner{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:authRot .7s linear infinite}
+.auth-submit-btn.loading .auth-submit-spinner{display:block}
+@keyframes authRot{to{transform:rotate(360deg)}}
+.auth-google-btn{width:100%;padding:11px;background:#fff;border:2px solid var(--accent);border-radius:10px;color:var(--accent);font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;margin-bottom:16px}
+.auth-google-btn:hover{background:#e8e8e8}
+.auth-google-btn:active{transform:scale(.98);background:#ddd}
+.auth-google-btn svg{width:18px;height:18px;flex-shrink:0}
+.auth-toggle{text-align:center;font-size:12.5px;color:var(--muted);margin-top:12px}
+.auth-toggle a{color:var(--accent);font-weight:600;text-decoration:underline;cursor:pointer}
+
+/* ========== USERNAME SETUP ========== */
+.username-page{display:flex;flex-direction:column;flex:1;align-items:center;justify-content:center;padding:32px 24px}
+.username-card{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center}
+.avatar-setup{
+  width:110px;height:110px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;margin-bottom:20px;overflow:hidden;position:relative;
+  transition:transform .2s;color:#fff;font-size:36px;font-weight:700;
+}
+.avatar-setup:active{transform:scale(.95)}
+.avatar-setup i{font-size:28px;color:rgba(255,255,255,.8)}
+.avatar-setup img{width:100%;height:100%;object-fit:cover;display:none}
+.username-card h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.username-card p{font-size:13px;color:var(--muted);margin-bottom:20px;text-align:center}
+.swatches{display:flex;gap:10px;margin-bottom:20px}
+.swatch{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:transform .12s,border-color .12s;
+}
+.swatch.selected{border-color:var(--text-primary);transform:scale(1.15)}
+.username-input{width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;color:var(--text-primary);font-size:15px;outline:none;text-align:center;transition:all .2s;margin-bottom:16px}
+.username-input:focus{border-color:var(--accent)}
+.username-input::placeholder{color:var(--muted)}
+body.light-mode .username-input:focus{border-color:var(--accent)}
+
+/* ========== TOP BAR ========== */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;background:var(--bg-primary);
+  backdrop-filter:blur(20px);position:relative;z-index:10;
+  height:56px;flex-shrink:0;
+}
+.top-bar-center{flex:1;display:flex;justify-content:center;align-items:center;gap:10px;padding:0 12px}
+.top-bar-center .brand-logo{width:46px;height:46px;border-radius:12px;object-fit:cover}
+.menu-btn{
+  background:transparent;border:none;color:var(--text-primary);
+  font-size:20px;cursor:pointer;padding:8px;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;border-radius:12px;
+  transition:background .2s;
+}
+.menu-btn:hover{background:var(--button-hover)}
+.menu-btn:active{background:var(--button-hover);transform:scale(.95)}
+
+/* ========== CHATS LIST ========== */
+.chats-scroll{flex:1;overflow-y:auto;padding:0 12px;padding-bottom:calc(20px + var(--safe-area-bottom));-webkit-overflow-scrolling:touch}
+.search-bar{
+  display:flex;align-items:center;gap:10px;background:transparent;
+  border-radius:999px;padding:6px 6px 6px 16px;margin:8px 0 12px;
+  border:1px solid var(--border-color);
+}
+.search-bar i{color:var(--muted);font-size:14px}
+.search-bar input{background:transparent;flex:1;border:none;color:var(--text-primary);font-size:14px;outline:none;padding:10px 0}
+.search-bar input::placeholder{color:var(--muted)}
+body.light-mode .search-bar{background:transparent;border-color:#d0d0d0}
+body.light-mode .search-bar input{color:#000}
+
+.friend-request-banner{
+  display:flex;align-items:center;justify-content:space-between;
+  border-radius:14px;padding:12px 16px;margin-bottom:10px;gap:10px;
+  border:1px solid var(--border-color);
+}
+.friend-request-banner.hidden{display:none}
+.friend-request-banner .fr-text{font-weight:600;font-size:13px;flex:1}
+.fr-actions{display:flex;gap:6px}
+.fr-btn{border:none;border-radius:10px;padding:8px 16px;font-weight:600;font-size:12px;cursor:pointer;transition:all .2s}
+.fr-accept{background:#84BE79;color:#fff}
+.fr-accept:hover{background:#6fa568}
+.fr-reject{background:#E2726E;color:#fff}
+.fr-reject:hover{background:#cc5e5a}
+
+.chat-list{display:flex;flex-direction:column;gap:2px}
+.chat-item{
+  display:flex;align-items:center;gap:14px;padding:12px 10px;
+  background:transparent;border-radius:14px;cursor:pointer;
+  transition:background .2s;min-height:56px;border:none;width:100%;color:var(--text-primary);
+}
+.chat-item:hover{background:var(--button-hover)}
+.chat-item:active{background:var(--button-hover)}
+.avatar{
+  width:48px;height:48px;border-radius:50%;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:18px;flex-shrink:0;
+  background-size:cover;background-position:center;
+}
+.avatar.sm{width:40px;height:40px;font-size:15px}
+.chat-name{font-size:15px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.messages{
+  flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;
+  padding:12px 14px 100px;-webkit-overflow-scrolling:touch;
+}
+.msg-row{display:flex;flex-direction:column;max-width:82%;animation:slideIn .25s ease-out}
+.msg-row.me{align-self:flex-end;align-items:flex-end}
+.msg-row.them{align-self:flex-start;align-items:flex-start}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bubble{
+  padding:12px 16px;border-radius:20px;font-size:15px;line-height:1.45;
+  user-select:none;-webkit-user-select:none;word-wrap:break-word;
+}
+.msg-row.me .bubble{background:var(--accent);color:#fff;border-bottom-right-radius:6px;cursor:pointer}
+.msg-image{display:block;max-width:220px;max-height:260px;border-radius:14px;object-fit:cover}
+.msg-row.them .bubble{background:var(--msg-them-bg);color:var(--text-primary);border-bottom-left-radius:6px}
+body.light-mode .msg-row.them .bubble{color:var(--text-primary);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.bubble.editing{padding:6px 8px;background:var(--button-hover)}
+.bubble.editing input{background:transparent;padding:8px 12px;border-radius:14px;color:var(--text-primary);font-size:15px;min-width:180px;border:none;outline:none}
+.msg-status{font-size:11px;margin-top:4px;padding:0 4px;color:var(--muted)}
+.msg-status.read{color:var(--accent);font-weight:600}
+.msg-author{font-size:11px;font-weight:700;color:var(--accent);margin:0 4px 3px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.input-container{
+  padding:12px 14px;padding-bottom:calc(20px + var(--safe-area-bottom));
+  background:transparent;position:fixed;bottom:0;left:0;right:0;
+  z-index:100;width:100%;
+}
+.input-wrapper{
+  background:var(--bg-secondary);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--border-color);border-radius:999px;
+  padding:6px 6px 6px 18px;display:flex;align-items:center;gap:8px;
+  min-height:52px;transition:all .3s;max-width:100%;box-sizing:border-box;
+}
+body.light-mode .input-wrapper{background:#fff;border-color:#d0d0d0}
+.input-wrapper input{flex:1;min-width:0;background:transparent;border:none;color:var(--text-primary);font-size:15px;outline:none;padding:10px 0}
+.input-wrapper input::placeholder{color:var(--muted)}
+body.light-mode .input-wrapper input{color:#000}
+.send-btn{
+  width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;
+  border:none;display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;cursor:pointer;transition:all .2s;margin:2px;
+}
+.clip-btn{
+  width:36px;height:36px;border-radius:50%;background:transparent;
+  border:none;display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;cursor:pointer;transition:background .2s;color:var(--muted);
+}
+.clip-btn:hover{background:var(--button-hover)}
+.send-btn:hover{filter:brightness(1.15)}
+.send-btn:active{transform:scale(.92)}
+
+/* ========== SEARCH / ADD FRIENDS ========== */
+.user-list{flex:1;overflow-y:auto;padding:0 14px;padding-bottom:calc(20px + var(--safe-area-bottom))}
+.user-row{display:flex;align-items:center;gap:14px;padding:12px 10px;border-radius:14px;transition:background .15s}
+.user-row:hover{background:var(--button-hover)}
+.user-name{font-size:15px;font-weight:600;flex:1}
+.add-btn{
+  cursor:pointer;color:var(--text-primary);flex-shrink:0;font-size:18px;
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;transition:all .15s;background:transparent;
+}
+.add-btn:hover{background:var(--button-hover)}
+.add-btn:active{transform:scale(.9)}
+.add-btn.added{color:var(--accent)}
+
+/* ========== SETTINGS PAGE ========== */
+.settings-page{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:var(--bg-primary);z-index:3000;display:none;
+  flex-direction:column;overflow:hidden;
+}
+.settings-page.active{display:flex}
+.settings-header{
+  display:flex;align-items:center;padding:12px 16px;
+  background:var(--bg-primary);border-bottom:none;gap:12px;flex-shrink:0;
+  padding-top:calc(12px + var(--safe-area-top));
+}
+.back-btn{
+  background:none;border:none;color:var(--text-primary);font-size:20px;
+  cursor:pointer;padding:8px;width:40px;height:40px;display:flex;
+  align-items:center;justify-content:center;border-radius:10px;
+}
+.back-btn:active{background:var(--button-hover)}
+.settings-title{font-size:18px;font-weight:600;color:var(--text-primary);flex:1}
+.settings-content{flex:1;overflow-y:auto;padding:20px 16px;-webkit-overflow-scrolling:touch;padding-bottom:calc(40px + var(--safe-area-bottom))}
+.settings-profile{
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:20px;padding:14px;
+}
+.settings-avatar{
+  width:64px;height:64px;border-radius:50%;background:var(--pfp-grey);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.8);font-size:22px;margin-bottom:10px;
+  overflow:hidden;cursor:pointer;position:relative;transition:transform .2s;
+}
+.settings-avatar:active{transform:scale(.95)}
+.settings-avatar img{width:100%;height:100%;object-fit:cover;display:none}
+.settings-avatar i.avatar-icon{display:flex}
+.settings-username{font-size:17px;font-weight:600;color:var(--text-primary);margin-bottom:3px}
+.settings-email{font-size:13px;color:var(--text-secondary)}
+.settings-hint{text-align:center;color:var(--muted);font-size:12px;margin:0 0 20px;line-height:1.5}
+body.light-mode .settings-hint{color:#888}
+
+.theme-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.theme-mode-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px;background:transparent;border:1px solid var(--border-color);border-radius:12px;
+  cursor:pointer;transition:all .2s;color:var(--text-primary);
+  font-size:14px;font-weight:600;
+}
+.theme-mode-btn:active{transform:scale(.98)}
+.theme-mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+body.light-mode .theme-mode-btn.active{background:var(--accent);color:#fff}
+
+.settings-section{margin-bottom:20px}
+.settings-section-label{font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600;letter-spacing:.5px;opacity:.8;padding-left:4px}
+body.light-mode .settings-section-label{color:#888}
+.settings-item{
+  background:transparent;border-radius:12px;padding:14px 4px;
+  margin-bottom:4px;cursor:pointer;display:flex;
+  align-items:center;justify-content:space-between;min-height:52px;
+}
+.settings-item:active{background:var(--button-hover)}
+.settings-item-left{display:flex;align-items:center;gap:12px;flex:1}
+.settings-item-icon{
+  width:34px;height:34px;border-radius:9px;background:var(--button-bg);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:15px;flex-shrink:0;
+}
+body.light-mode .settings-item-icon{background:#e0e0e0;color:var(--accent)}
+.settings-item-info{display:flex;flex-direction:column}
+.settings-item-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:1px}
+.settings-item-subtitle{font-size:12px;color:var(--text-secondary)}
+.settings-item-expand-content{max-height:0;overflow:hidden;transition:max-height .3s;background:var(--bg-primary);border-radius:12px;margin-bottom:8px}
+.settings-item-expand-content.active{max-height:500px;padding:14px;overflow-y:auto}
+.settings-btn{
+  width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;
+  color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s;
+}
+.settings-btn:active{transform:scale(.98);filter:brightness(.9)}
+.settings-btn.danger{background:rgba(255,68,68,.9);color:#fff;margin-top:20px}
+.settings-field{margin-bottom:10px}
+.settings-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:5px}
+body.light-mode .settings-field label{color:#555}
+.settings-input{
+  width:100%;padding:11px 14px;background:var(--bg-secondary);
+  border:1px solid transparent;border-radius:10px;
+  color:var(--text-primary);font-size:14px;outline:none;
+}
+.settings-input:focus{border-color:var(--accent)}
+body.light-mode .settings-input{background:#fff;border-color:#d0d0d0;color:#000}
+body.light-mode .settings-input:focus{border-color:var(--accent)}
+
+body.light-mode .menu-btn i{color:var(--accent)}
+body.light-mode .search-bar i{color:var(--accent)}
+body.light-mode .auth-field-icon{color:var(--accent)}
+body.light-mode .auth-pwt{color:var(--accent)}
+body.light-mode .auth-field label{color:var(--accent)}
+body.light-mode .auth-input{color:var(--accent);border-color:var(--accent)}
+body.light-mode .clip-btn i{color:var(--accent) !important}
+body.light-mode .username-input{background:#fff;border-color:#d0d0d0;color:var(--text-primary)}
+body.light-mode .search-bar input{color:var(--text-primary)}
+body.light-mode .input-wrapper input{color:var(--text-primary)}
+body.light-mode .settings-item-title{color:var(--text-primary)}
+
+/* ========== CONTEXT MENU / MODALS ========== */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:6000;
+  display:none;align-items:center;justify-content:center;padding:24px;
+}
+.overlay.active{display:flex}
+.menu-sheet{width:100%;max-width:340px;background:var(--bg-secondary);border-radius:18px;padding:8px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+body.light-mode .menu-sheet{background:#fff}
+.menu-option{
+  display:flex;align-items:center;gap:14px;width:100%;
+  background:transparent;border:none;color:var(--text-primary);
+  font-size:15px;font-weight:600;padding:16px 14px;border-radius:12px;cursor:pointer;text-align:left;
+}
+.menu-option i{width:20px;text-align:center;font-size:16px;color:var(--accent)}
+.menu-option.danger{color:#E2726E}
+.menu-option.danger i{color:#E2726E}
+body.light-mode .menu-option{color:var(--text-primary)}
+.modal{
+  width:100%;max-width:340px;background:var(--bg-secondary);border-radius:18px;
+  padding:22px;box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+body.light-mode .modal{background:#fff}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text-primary)}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.modal input{
+  width:100%;padding:12px 14px;background:var(--bg-primary);border:1px solid var(--border-color);
+  border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:16px;
+}
+body.light-mode .modal input{background:#fff;border-color:#d0d0d0;color:var(--text-primary)}
+.modal .modal-actions{display:flex;gap:10px}
+.modal-btn{
+  flex:1;padding:12px;border:none;border-radius:10px;cursor:pointer;
+  font-size:14px;font-weight:600;
+}
+.modal-btn.cancel{background:var(--button-bg);color:var(--text-primary)}
+.modal-btn.confirm{background:#E2726E;color:#fff}
+.modal-btn.accent{background:var(--accent);color:#fff}
+
+.msg-edited{font-size:11px;margin-top:4px;padding:0 4px;color:var(--muted)}
+
+/* ========== GROUP FAB + CREATE MODAL ========== */
+.group-fab{
+  position:fixed;right:18px;bottom:calc(24px + var(--safe-area-bottom));
+  width:58px;height:58px;border-radius:50%;background:var(--accent);
+  border:none;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:300;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .2s;
+}
+.group-fab:active{transform:scale(.92)}
+.group-modal{width:100%;max-width:380px;max-height:86vh;display:flex;flex-direction:column}
+.group-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px;flex-shrink:0}
+.group-modal-header h3{font-size:16px;font-weight:700;color:var(--text-primary)}
+.group-modal-header .close-btn{background:none;border:none;color:var(--text-primary);font-size:20px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.gm-body{flex:1;overflow-y:auto;padding:0 16px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+.gm-cover{display:flex;flex-direction:column;align-items:center;margin-bottom:16px}
+.gm-cover-avatar{
+  width:90px;height:90px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  overflow:hidden;color:#fff;font-size:30px;font-weight:700;margin-bottom:10px;position:relative;
+}
+.gm-cover-avatar i{font-size:24px;color:rgba(255,255,255,.85)}
+.gm-cover-avatar img{width:100%;height:100%;object-fit:cover;display:none}
+.gm-name-input{width:100%;padding:12px 14px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;color:var(--text-primary);font-size:14px;outline:none;text-align:center;margin-bottom:14px}
+body.light-mode .gm-name-input{background:#fff;border-color:#d0d0d0;color:var(--text-primary)}
+.gm-member{display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:12px}
+.gm-member-check{
+  width:24px;height:24px;border-radius:7px;border:2px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;
+  flex-shrink:0;transition:all .2s;cursor:pointer;
+}
+.gm-member.checked .gm-member-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.gm-member .user-name{flex:1}
+.gm-create-btn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin:8px 0 16px;transition:all .2s}
+.gm-create-btn:hover{filter:brightness(1.1)}
+.gm-create-btn:active{transform:scale(.98);filter:brightness(.9)}
+
+/* ========== CALL UI ========== */
+.call-screen{
+  position:fixed;inset:0;background:#1f1f23;z-index:7000;display:none;
+  flex-direction:column;color:#fff;
+}
+.call-screen.active{display:flex}
+body.light-mode .call-screen{background:#1f1f23;color:#fff}
+.call-video-area{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.call-remote-video{
+  width:100%;height:100%;object-fit:cover;display:none;
+  background:radial-gradient(circle at center,#2c2c31,#151518);
+}
+.call-screen.video .call-remote-video{display:block}
+.call-remote-stream{position:absolute;inset:0;z-index:1;background:#111}
+.call-remote-stream video{width:100%;height:100%;object-fit:cover}
+.call-avatar-big{
+  width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:44px;font-weight:700;color:#fff;text-align:center;
+}
+.call-screen.video .call-avatar-big{position:absolute;bottom:24px;right:16px;width:96px;height:96px;font-size:36px;display:none}
+.call-local-video{
+  position:absolute;top:16px;right:16px;width:88px;height:118px;border-radius:14px;
+  background:#333;object-fit:cover;display:none;border:2px solid #fff;
+}
+.call-screen.video .call-local-video{display:block}
+.call-info{text-align:center;padding:20px 16px;position:relative;z-index:2}
+.call-name{font-size:20px;font-weight:700;margin-bottom:4px}
+.call-status{font-size:13px;color:#b9c2d4;margin-bottom:6px}
+.call-timer{font-size:13px;color:#8a94a8;font-variant-numeric:tabular-nums}
+.call-controls{
+  display:flex;align-items:center;justify-content:center;
+  padding:28px 16px calc(28px + var(--safe-area-bottom));
+}
+.call-ctl-group{display:flex;align-items:center;justify-content:center;gap:22px}
+.call-ctl-btn{
+  width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.14);color:#fff;font-size:20px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.call-ctl-btn.off{background:rgba(255,255,255,.32);color:#fff}
+.call-ctl-btn:active{transform:scale(.92)}
+.call-ctl-end{width:60px;height:60px;background:#e53935;font-size:24px}
+.call-ctl-end:active{background:#d32f2f}
+.call-participants{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;z-index:2;
+}
+.call-participants .call-pip-icon{
+  width:30px;height:30px;border-radius:50%;border:2px solid #1f1f23;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;
+  margin-left:-8px;
+}
+.call-participants .call-pip-icon:first-child{margin-left:0}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
+
+@media(max-width:768px){
+  .top-bar{padding:12px 14px}
+  .input-container{padding:12px 12px;padding-bottom:calc(16px + var(--safe-area-bottom))}
+}
+@supports(-webkit-touch-callout:none){
+  .input-container{padding-bottom:max(20px,var(--safe-area-bottom))}
+  *{-webkit-touch-callout:none}
+}
+</style>
+
+<!-- Firebase Compat SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<!-- Agora RTC Web SDK -->
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.23.1.js"></script>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loader-brand"><span class="hyze">Hyze</span><span class="net">Net</span></div>
+  <div class="loader-bottom"><div class="loader-ring"></div></div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="screen auth-container" id="screen-auth">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-card-logo">
+        <img src="https://i.imgur.com/mNYkgcB.png" alt="Nett">
+      </div>
+      <h2 id="authTitle">Welcome to Nett</h2>
+      <p class="auth-sub" id="authSubtitle">Sign up to start chatting with friends.</p>
+      <div class="auth-field">
+        <label>Email</label>
+        <div class="auth-input-wrap">
+          <i class="far fa-envelope auth-field-icon"></i>
+          <input type="email" id="authEmail" class="auth-input" placeholder="Email" autocomplete="email">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="auth-input-wrap">
+          <i class="fas fa-lock auth-field-icon"></i>
+          <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="current-password">
+        </div>
+      </div>
+      <button type="button" class="auth-submit-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">
+        <span class="auth-submit-label" id="authSubmitLabel"><span id="authSubmitText">Sign Up</span></span>
+        <span class="auth-submit-spinner"></span>
+      </button>
+      <button type="button" class="auth-google-btn" onclick="handleGoogleAuth()">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <span>Continue with Google</span>
+      </button>
+      <div class="auth-toggle">
+        <span id="authToggleText">Have an account? <a href="#" onclick="toggleAuthMode(); return false;">Log in</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USERNAME SETUP -->
+<div class="screen" id="screen-username">
+  <div class="username-page">
+    <div class="username-card">
+      <div class="avatar-setup" id="setupAvatar" onclick="document.getElementById('pfpFileInput').click()">
+        <i class="fa-solid fa-arrow-up-from-bracket" id="setupAvatarIcon"></i>
+        <img id="setupAvatarImg">
+        <span id="setupAvatarLetter" style="display:none"></span>
+      </div>
+      <input type="file" id="pfpFileInput" accept="image/*" style="display:none" onchange="handlePfpUpload(event)">
+      <div class="swatches" id="swatches"></div>
+      <h2>Create your profile</h2>
+      <p>Choose a username to get started.</p>
+      <input type="text" class="username-input" id="usernameInput" placeholder="Enter username" onkeydown="if(event.key==='Enter')finishUsername()" maxlength="20" oninput="updateAvatarLetter()">
+      <button class="auth-submit-btn" onclick="finishUsername()">
+        <span class="auth-submit-label"><span>Continue</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CHATS LIST -->
+<div class="screen" id="screen-chats">
+  <div class="top-bar">
+    <button class="menu-btn" onclick="goTo('screen-settings')" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
+    <div class="top-bar-center">
+      <img src="https://i.imgur.com/mNYkgcB.png" class="brand-logo" alt="Nett">
+    </div>
+    <button class="menu-btn" onclick="goTo('screen-search')" aria-label="Add friend"><i class="fa-solid fa-user-plus"></i></button>
+  </div>
+  <div class="chats-scroll">
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="chatSearchInput" placeholder="Search chats..." oninput="renderChatList()">
+    </div>
+    <div class="friend-request-banner hidden" id="friendRequestBanner">
+      <span class="fr-text">Friend request from: Peter</span>
+      <div class="fr-actions">
+        <button class="fr-btn fr-accept" onclick="respondFriendRequest(true)">Accept</button>
+        <button class="fr-btn fr-reject" onclick="respondFriendRequest(false)">Reject</button>
+      </div>
+    </div>
+    <div class="chat-list" id="chatList"></div>
+  </div>
+  <button class="group-fab" onclick="openGroupModal()" aria-label="Create group chat"><i class="fa-solid fa-people-group" style="color: rgb(255, 255, 255);"></i></button>
+</div>
+
+<!-- CHAT WINDOW -->
+<div class="screen" id="screen-chat">
+  <div class="top-bar">
+    <button class="menu-btn" onclick="goTo('screen-chats')" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+    <div class="top-bar-center" id="chatTopInfo">
+      <div class="avatar sm" id="chatTopAvatar"></div>
+      <span id="chatTopName" style="font-weight:600;font-size:15px"></span>
+    </div>
+    <div style="display:flex;gap:4px">
+      <button class="menu-btn" aria-label="Phone" onclick="openCall('audio')"><i class="fa-solid fa-phone"></i></button>
+      <button class="menu-btn" aria-label="Video" onclick="openCall('video')"><i class="fa-solid fa-video"></i></button>
+    </div>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="input-container">
+    <div class="input-wrapper">
+      <button class="clip-btn" onclick="document.getElementById('chatFileInput').click()" aria-label="Attach file"><i class="fa-solid fa-paperclip" style="color: rgb(255, 255, 255);"></i></button>
+      <input type="text" id="chatInput" placeholder="Send a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+      <button class="send-btn" onclick="sendMessage()" aria-label="Send"><i class="fa-solid fa-arrow-up" style="color: rgb(255, 255, 255);"></i></button>
+    </div>
+    <input type="file" id="chatFileInput" accept="image/*" style="display:none" onchange="handleChatUpload(event)">
+  </div>
+</div>
+
+<!-- CALL SCREEN -->
+<div class="call-screen" id="callScreen">
+  <div class="call-video-area" id="callVideoArea">
+    <div class="call-remote-video" id="callRemoteVideo"></div>
+    <div class="call-participants" id="callParticipants"></div>
+    <div class="call-avatar-big" id="callAvatar"></div>
+    <video class="call-local-video" id="callLocalVideo" muted autoplay playsinline></video>
+  </div>
+  <div class="call-info">
+    <div class="call-name" id="callName"></div>
+    <div class="call-status" id="callStatus">Calling...</div>
+    <div class="call-timer" id="callTimer"></div>
+  </div>
+  <div class="call-controls">
+    <div class="call-ctl-group" id="callAudioControls">
+      <button class="call-ctl-btn" id="callMuteBtnA" onclick="toggleCallMute(true)" aria-label="Mute"><i class="fa-solid fa-microphone"></i></button>
+      <button class="call-ctl-btn" id="callSpeakerBtnA" onclick="toggleCallSpeaker(true)" aria-label="Speaker"><i class="fa-solid fa-volume-high"></i></button>
+      <button class="call-ctl-btn call-ctl-end" onclick="endCall()" aria-label="End call"><i class="fa-solid fa-phone" style="transform:rotate(135deg)"></i></button>
+    </div>
+    <div class="call-ctl-group" id="callVideoControls" style="display:none">
+      <button class="call-ctl-btn" id="callMuteBtnV" onclick="toggleCallMute(false)" aria-label="Mute"><i class="fa-solid fa-microphone"></i></button>
+      <button class="call-ctl-btn" id="callSpeakerBtnV" onclick="toggleCallSpeaker(false)" aria-label="Speaker"><i class="fa-solid fa-volume-high"></i></button>
+      <button class="call-ctl-btn" id="callVideoBtn" onclick="toggleCallVideo()" aria-label="Video"><i class="fa-solid fa-video"></i></button>
+      <button class="call-ctl-btn call-ctl-end" onclick="endCall()" aria-label="End call"><i class="fa-solid fa-phone" style="transform:rotate(135deg)"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH / ADD FRIENDS -->
+<div class="screen" id="screen-search">
+  <div class="top-bar">
+    <button class="menu-btn" onclick="goTo('screen-chats')" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+    <div class="top-bar-center"><h1 style="font-size:18px;font-weight:700;margin:0">Add Friends</h1></div>
+    <div style="width:44px"></div>
+  </div>
+  <div style="padding:0 14px;flex-shrink:0">
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search people" oninput="renderUserList(this.value)">
+    </div>
+  </div>
+  <div class="user-list" id="userList"></div>
+</div>
+
+<!-- SETTINGS PAGE -->
+<div class="settings-page" id="screen-settings">
+  <div class="settings-header">
+    <button class="back-btn" onclick="goTo('screen-chats')"><i class="fa-solid fa-arrow-left"></i></button>
+    <div class="settings-title">Settings</div>
+  </div>
+  <div class="settings-content">
+    <div class="settings-profile">
+      <div class="settings-avatar" id="settingsAvatar" onclick="document.getElementById('pfpFileInput').click()">
+        <i class="fa-solid fa-arrow-up-from-bracket avatar-icon" id="settingsAvatarIcon"></i>
+        <img id="settingsAvatarImg">
+        <span id="settingsAvatarLetter" style="display:none;font-weight:700;color:#fff"></span>
+      </div>
+      <div class="settings-username" id="settingsName">User</div>
+      <div class="settings-email" id="settingsEmail">user@email.com</div>
+    </div>
+    <p class="settings-hint">You can upload a new photo or change your username any time from your profile.</p>
+
+    <div class="theme-buttons">
+      <button class="theme-mode-btn" id="darkModeBtn" onclick="setTheme('dark')">
+        <i class="fas fa-moon"></i><span>Dark Mode</span>
+      </button>
+      <button class="theme-mode-btn" id="lightModeBtn" onclick="setTheme('light')">
+        <i class="fas fa-sun"></i><span>Light Mode</span>
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-label">Account</div>
+      <div class="settings-item" onclick="document.getElementById('pfpFileInput').click()">
+        <div class="settings-item-left">
+          <div class="settings-item-info">
+            <div class="settings-item-title">Change Profile Photo</div>
+            <div class="settings-item-subtitle">Upload a new picture</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color:var(--text-secondary);font-size:13px"></i>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-label">Security</div>
+      <div class="settings-item" onclick="toggleExpand('emailExpand')">
+        <div class="settings-item-left">
+          <div class="settings-item-info">
+            <div class="settings-item-title">Email</div>
+            <div class="settings-item-subtitle" id="settingsEmailDisplay">email@email.com</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down" style="color:var(--text-secondary);font-size:13px"></i>
+      </div>
+      <div class="settings-item-expand-content" id="emailExpand">
+        <div class="settings-field">
+          <label>New Email</label>
+          <input type="email" class="settings-input" id="newEmailInput" placeholder="new@email.com">
+        </div>
+        <button class="settings-btn" onclick="saveEmail()">Save Email</button>
+      </div>
+      <div class="settings-item" onclick="toggleExpand('passwordExpand')">
+        <div class="settings-item-left">
+          <div class="settings-item-info">
+            <div class="settings-item-title">Change Password</div>
+            <div class="settings-item-subtitle">Update your password</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-down" style="color:var(--text-secondary);font-size:13px"></i>
+      </div>
+      <div class="settings-item-expand-content" id="passwordExpand">
+        <div class="settings-field">
+          <label>Current Password</label>
+          <input type="password" class="settings-input" placeholder="Current password">
+        </div>
+        <div class="settings-field">
+          <label>New Password</label>
+          <input type="password" class="settings-input" placeholder="New password">
+        </div>
+        <button class="settings-btn" onclick="savePassword()">Save Password</button>
+      </div>
+    </div>
+
+    <button class="settings-btn danger" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+<!-- CREATE GROUP MODAL -->
+<div class="overlay" id="groupOverlay">
+  <div class="modal group-modal">
+    <div class="group-modal-header">
+      <h3>New Group</h3>
+      <button class="close-btn" onclick="closeGroupModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gm-body">
+      <div class="gm-cover">
+        <div class="gm-cover-avatar" id="groupCoverAvatar" onclick="document.getElementById('groupCoverFile').click()">
+          <i class="fa-solid fa-arrow-up-from-bracket" id="groupCoverIcon"></i>
+          <img id="groupCoverImg">
+          <span id="groupCoverLetter" style="display:none"></span>
+        </div>
+        <input type="file" id="groupCoverFile" accept="image/*" style="display:none" onchange="handleGroupCoverUpload(event)">
+        <input type="text" class="gm-name-input" id="groupNameInput" placeholder="Group name" maxlength="25" oninput="updateGroupCoverLetter()">
+      </div>
+      <div class="swatches" id="groupSwatches" style="display:flex;justify-content:center;margin:auto 0 12px"></div>
+      <div id="groupMembersList"></div>
+    </div>
+    <div style="padding:0 16px;flex-shrink:0">
+      <button class="gm-create-btn" onclick="createGroup()">Create Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT CONTEXT MENU -->
+<div class="overlay" id="chatMenuOverlay">
+  <div class="menu-sheet">
+    <button class="menu-option" onclick="openRenameModal()"><i class="fa-solid fa-pen"></i>Rename</button>
+    <button class="menu-option danger" onclick="openBlockConfirm()"><i class="fa-solid fa-ban"></i>Block</button>
+    <button class="menu-option" onclick="closeChatMenu()"><i class="fa-solid fa-xmark"></i>Cancel</button>
+  </div>
+</div>
+
+<!-- RENAME MODAL -->
+<div class="overlay" id="renameOverlay">
+  <div class="modal">
+    <h3 id="renameTitle">Rename</h3>
+    <p>Set a nickname for this person. Only you will see it.</p>
+    <input type="text" id="renameInput" placeholder="Enter nickname" maxlength="20">
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeRenameModal()">Cancel</button>
+      <button class="modal-btn accent" onclick="saveRename()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCK CONFIRM MODAL -->
+<div class="overlay" id="blockOverlay">
+  <div class="modal">
+    <h3 id="blockTitle">Block User</h3>
+    <p id="blockText">Are you sure you want to block this user?</p>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeBlockConfirm()">Cancel</button>
+      <button class="modal-btn confirm" onclick="blockUser()">Block</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== CONFIG — PASTE YOUR CREDENTIALS ========== */
+var FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyCxdFKdo5oTYjtoKvIfiq5X5LVCB1LR1BQ',
+  authDomain: 'hyzenet-36d5e.firebaseapp.com',
+  projectId: 'hyzenet-36d5e',
+  storageBucket: 'hyzenet-36d5e.firebasestorage.app',
+  messagingSenderId: '1029888019046',
+  appId: '1:1029888019046:web:3ab70006ad33ee8408fba7',
+  measurementId: 'G-QR98T5HGQQ'
+};
+var AGORA_APP_ID = 'e993c311cdcf424f85ff0a94b9ff0e6f';
+var AGORA_TOKEN = null; /* leave null while Agora App Certificate is off */
+
+/* ========== FIREBASE INIT ========== */
+var db, storage;
+function initFirebase(){
+  if(db) return true;
+  if(FIREBASE_CONFIG.apiKey.indexOf('PASTE') === 0){ return false; }
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.firestore();
+  storage = firebase.storage();
+  return true;
+}
+
+/* ========== LOADER ========== */
+setTimeout(function(){
+  document.getElementById('loadingScreen').classList.add('hidden');
+  var ok = initFirebase();
+  if(!ok){
+    document.getElementById('authSubmitBtn').innerHTML = '<span class="auth-submit-label">Missing Firebase config — edit FIREBASE_CONFIG</span>';
+    return;
+  }
+  firebase.auth().onAuthStateChanged(bootUser);
+  firebase.auth().getRedirectResult().then(function(result){
+    if(result && result.user) bootUser(result.user);
+  }).catch(function(err){ console.error('getRedirectResult:', err); });
+}, 1500);
+
+function userUsesGoogle(user){
+  var pd = user.providerData || [];
+  for(var i=0;i<pd.length;i++){ if(pd[i].providerId === 'google.com') return true; }
+  return false;
+}
+
+function bootUser(user){
+  if(!user){
+    clearSession();
+    goTo('screen-auth');
+    return;
+  }
+  myUid = user.uid;
+  myProfile.uid = user.uid;
+  myProfile.email = user.email || '';
+  db.collection('users').doc(myUid).get().then(function(snap){
+    continueBoot(snap.exists ? snap.data() : null, user);
+  }).catch(function(err){
+    console.error('Profile read failed:', err);
+    continueBoot(null, user);
+  });
+}
+
+function continueBoot(p, user){
+  if((!p || !p.name) && userUsesGoogle(user)){
+    p = p || {};
+    p.name = (user.displayName || '').trim() || (user.email ? user.email.split('@')[0] : 'User');
+    p.colorVar = p.colorVar || colorOptions[Math.floor(Math.random() * colorOptions.length)];
+    p.avatar = p.avatar || (user.photoURL || '');
+    db.collection('users').doc(user.uid).set(p, { merge:true }).catch(function(err){
+      console.error('Profile create failed:', err);
+      var wrap = document.getElementById('chatList');
+      if(wrap) wrap.innerHTML = '';
+    });
+  }
+  if(!p || !p.name){
+    goTo('screen-username');
+    return;
+  }
+  myProfile.name = p.name;
+  myProfile.colorVar = p.colorVar || '--c-blue';
+  myProfile.avatar = p.avatar || '';
+  applyMyProfile(true);
+  startApp();
+  goTo('screen-chats');
+}
+function clearSession(){
+  myUid = null;
+  activeChatId = null;
+  if(msgUnsub){ msgUnsub(); msgUnsub = null; }
+  if(listUnsub){ listUnsub(); listUnsub = null; }
+}
+
+/* ========== NAVIGATION ========== */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-settings').classList.remove('active');
+  if(id==='screen-settings'){
+    document.getElementById('screen-settings').classList.add('active');
+  } else {
+    document.getElementById(id).classList.add('active');
+  }
+}
+
+/* ========== THEME ========== */
+var isDarkMode = localStorage.getItem('nett_theme') !== 'light';
+function initTheme(){
+  if(!isDarkMode) document.body.classList.add('light-mode');
+  updateThemeUI();
+  updateLogo();
+}
+function setTheme(mode){
+  isDarkMode = (mode==='dark');
+  if(isDarkMode) document.body.classList.remove('light-mode');
+  else document.body.classList.add('light-mode');
+  localStorage.setItem('nett_theme', isDarkMode?'dark':'light');
+  updateThemeUI();
+  updateLogo();
+}
+function updateThemeUI(){
+  var d = document.getElementById('darkModeBtn');
+  var l = document.getElementById('lightModeBtn');
+  if(d) d.classList.toggle('active', isDarkMode);
+  if(l) l.classList.toggle('active', !isDarkMode);
+}
+function updateLogo(){
+  var src = isDarkMode ? 'https://i.imgur.com/mNYkgcB.png' : 'https://i.imgur.com/vMrMruh.png';
+  document.querySelectorAll('.brand-logo, .auth-card-logo img').forEach(function(img){
+    img.src = src;
+  });
+}
+initTheme();
+
+/* ========== AUTH ========== */
+var isLogin = false;
+function setAuthMode(mode){
+  isLogin = (mode==='signin');
+  document.getElementById('authTitle').textContent = isLogin ? 'Welcome back' : 'Welcome to Nett';
+  document.getElementById('authSubtitle').textContent = isLogin ? 'Log in to your account.' : 'Sign up to start chatting with friends.';
+  document.getElementById('authSubmitText').textContent = isLogin ? 'Log In' : 'Sign Up';
+  document.getElementById('authToggleText').innerHTML = isLogin
+    ? 'New here? <a href="#" onclick="toggleAuthMode(); return false;">Sign up</a>'
+    : 'Have an account? <a href="#" onclick="toggleAuthMode(); return false;">Log in</a>';
+}
+function toggleAuthMode(){ setAuthMode(isLogin?'signup':'signin'); }
+
+function setAuthLoading(on){
+  document.getElementById('authSubmitBtn').classList.toggle('loading', on);
+}
+
+function handleAuthSubmit(){
+  var email = document.getElementById('authEmail').value.trim();
+  var pass = document.getElementById('authPassword').value;
+  if(!email || !pass){ return; }
+  if(!db){ alert('Firebase not configured yet. Paste your FIREBASE_CONFIG.'); return; }
+  setAuthLoading(true);
+  var pr = isLogin
+    ? firebase.auth().signInWithEmailAndPassword(email, pass)
+    : firebase.auth().createUserWithEmailAndPassword(email, pass);
+  pr.then(function(){
+    setAuthLoading(false);
+    if(!isLogin) goTo('screen-username'); /* new account → pick a username */
+  }).catch(function(err){
+    setAuthLoading(false);
+    alert(err.code + ': ' + err.message);
+  });
+}
+
+function handleGoogleAuth(){
+  if(!db){ alert('Firebase not configured yet. Paste your FIREBASE_CONFIG.'); return; }
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider).catch(function(err){
+    alert(err.code + ': ' + err.message);
+  });
+}
+
+function logout(){
+  if(rtc.client) leaveChannel();
+  if(msgUnsub){ msgUnsub(); msgUnsub = null; }
+  if(listUnsub){ listUnsub(); listUnsub = null; }
+  if(contactRefs){ contactRefs(); contactRefs = null; }
+  firebase.auth().signOut();
+  clearSession();
+}
+
+/* ========== COLOR SWATCHES ========== */
+var colorOptions = ['--c-red','--c-orange','--c-yellow','--c-green','--c-blue','--c-purple'];
+var selectedColorVar = '--c-blue';
+var swatchWrap = document.getElementById('swatches');
+colorOptions.forEach(function(cv){
+  var el = document.createElement('div');
+  el.className = 'swatch' + (cv===selectedColorVar?' selected':'');
+  el.style.background = 'var('+cv+')';
+  el.onclick = function(){
+    document.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('selected'); });
+    el.classList.add('selected');
+    selectedColorVar = cv;
+    document.getElementById('setupAvatar').style.background = 'var('+cv+')';
+  };
+  swatchWrap.appendChild(el);
+});
+
+function updateAvatarLetter(){
+  var val = document.getElementById('usernameInput').value.trim();
+  var letterEl = document.getElementById('setupAvatarLetter');
+  var iconEl = document.getElementById('setupAvatarIcon');
+  if(!pfpUrl){
+    if(val){
+      letterEl.textContent = val[0].toUpperCase();
+      letterEl.style.display = 'flex';
+      iconEl.style.display = 'none';
+    } else {
+      letterEl.style.display = 'none';
+      iconEl.style.display = 'flex';
+    }
+  }
+}
+
+/* ========== IMAGE RESIZE (Firestore-safe base64) ========== */
+function resizeImageDataUrl(dataUrl, maxDim, quality){
+  maxDim = maxDim || 1024;
+  quality = quality || 0.82;
+  var timedOut = false;
+  return new Promise(function(resolve){
+    var timer = setTimeout(function(){ timedOut = true; resolve(dataUrl); }, 10000);
+    var settle = function(v){
+      clearTimeout(timer);
+      if(!timedOut) resolve(v);
+    };
+    try{
+      var img = new Image();
+      img.onload = function(){
+        if(timedOut) return;
+        try{
+          var w = img.naturalWidth;
+          var h = img.naturalHeight;
+          if(w > maxDim || h > maxDim){
+            var ratio = Math.min(maxDim / w, maxDim / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob(function(b){
+            if(timedOut) return;
+            if(b){
+              var reader = new FileReader();
+              reader.onload = function(){ settle(reader.result); };
+              reader.onerror = function(){ settle(dataUrl); };
+              reader.readAsDataURL(b);
+            } else {
+              settle(dataUrl);
+            }
+          }, 'image/jpeg', quality);
+        }catch(e){
+          console.warn('resize failed, using original', e);
+          settle(dataUrl);
+        }
+      };
+      img.onerror = function(){ settle(dataUrl); };
+      img.src = dataUrl;
+    }catch(e){
+      console.warn('resize failed, using original', e);
+      settle(dataUrl);
+    }
+  });
+}
+
+/* ========== PFP UPLOAD ========== */
+var pfpUrl = null;
+function handlePfpUpload(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var raw = ev.target.result;
+    pfpUrl = raw;
+    refreshPfp();
+    resizeImageDataUrl(raw, 512, 0.82).then(function(bigUrl){
+      pfpUrl = bigUrl;
+      refreshPfp();
+      if(db && myUid){
+        myProfile.avatar = bigUrl;
+        db.collection('users').doc(myUid).update({ avatar: bigUrl }).catch(function(){});
+      }
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function refreshPfp(){
+  ['setupAvatar','settingsAvatar'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var img = el.querySelector('img');
+    var icon = el.querySelector('i.avatar-icon') || el.querySelector('i');
+    var letterEl = el.querySelector('span');
+    if(pfpUrl){
+      img.src = pfpUrl;
+      img.style.display = 'block';
+      if(icon) icon.style.display = 'none';
+      if(letterEl) letterEl.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      if(letterEl && letterEl.textContent){
+        letterEl.style.display = 'flex';
+        if(icon) icon.style.display = 'none';
+      } else {
+        if(icon) icon.style.display = 'flex';
+        if(letterEl) letterEl.style.display = 'none';
+      }
+    }
+  });
+}
+
+/* ========== USERNAME ========== */
+var username = 'You';
+
+function finishUsername(){
+  var val = document.getElementById('usernameInput').value.trim();
+  if(!val) return;
+  if(!db){ alert('Firebase not configured yet. Paste your FIREBASE_CONFIG.'); return; }
+  var uid = firebase.auth().currentUser.uid;
+  if(!uid) return;
+  var data = {
+    name: val,
+    colorVar: selectedColorVar,
+    avatar: pfpUrl || '',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  var done = function(url){
+    if(url) data.avatar = url;
+    db.collection('users').doc(uid).set(data, { merge:true }).then(function(){
+      applyMyProfile(false);
+      goTo('screen-chats');
+      startApp();
+    }).catch(function(err){
+      console.error('finishUsername set failed:', err);
+      alert('Could not save profile: ' + err.code + '. Check your Firestore rules and click Publish.');
+    });
+  };
+  if(pfpUrl && pfpUrl.indexOf('data:') === 0){
+    resizeImageDataUrl(pfpUrl, 512, 0.82).then(done);
+  } else {
+    done(null);
+  }
+}
+
+/* ========== FIRESTORE DATA LAYER ========== */
+var myUid = null;
+var myProfile = { uid:null, name:'You', colorVar:'--c-blue', avatar:'', email:'' };
+var contacts = {};        // DM chats: chatId -> chat obj
+var groups = {};          // group chats: chatId -> chat obj
+var contactOrder = [];    // DM chat ids
+var groupOrder = [];      // group chat ids
+var chatMsgCache = {};
+var msgUnsub = null;
+var listUnsub = null;
+var contactRefs = null;
+var appStarted = false;
+var nicknames = JSON.parse(localStorage.getItem('nett_nicknames')||'{}');
+var blockedChats = JSON.parse(localStorage.getItem('nett_blocked')||'[]');
+var myContacts = {};      // uid -> {name,colorVar,avatar}
+
+function avatarHTML(colorVar, letter, extraClass, cover){
+  if(cover) return '<div class="avatar '+(extraClass||'')+'" style="background-image:url('+escapeAttr(cover)+');background-size:cover;background-position:center"></div>';
+  return '<div class="avatar '+(extraClass||'')+'" style="background:var('+colorVar+')">'+letter+'</div>';
+}
+
+function getChatObj(id){
+  return groups[id] || contacts[id] || null;
+}
+
+function displayName(id){
+  var c = getChatObj(id);
+  if(!c) return '';
+  if(groups[id]) return (nicknames[id] || c.name) + ' (Group Chat)';
+  return nicknames[id] || c.name;
+}
+
+function applyMyProfile(skipNav){
+  document.getElementById('settingsName').textContent = myProfile.name;
+  var em = document.getElementById('settingsEmailDisplay');
+  if(em) em.textContent = myProfile.email;
+  var un = document.getElementById('usernameInput');
+  if(un) un.value = myProfile.name;
+  var sAv = document.getElementById('settingsAvatar');
+  if(sAv){
+    var img = document.getElementById('settingsAvatarImg');
+    var letterEl = document.getElementById('settingsAvatarLetter');
+    var iconEl = document.getElementById('settingsAvatarIcon');
+    if(myProfile.avatar){
+      img.src = myProfile.avatar; img.style.display = 'block';
+      if(iconEl) iconEl.style.display = 'none';
+      if(letterEl) letterEl.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      if(iconEl) iconEl.style.display = 'none';
+      if(letterEl){ letterEl.textContent = myProfile.name[0]; letterEl.style.display = 'flex'; }
+      sAv.style.background = 'var(' + myProfile.colorVar + ')';
+    }
+  }
+}
+
+function subscribeChats(){
+  if(listUnsub){ listUnsub(); listUnsub = null; }
+  var q = db.collection('chats')
+    .where('memberIds', 'array-contains', myUid)
+    .limit(200);
+  listUnsub = q.onSnapshot(function(snap){
+    contacts = {};
+    groups = {};
+    var cm = [], gm = [];
+    var docs = snap.docs.slice().sort(function(a, b){
+      var ta = a.data().lastMessageAt, tb = b.data().lastMessageAt;
+      var ma = ta ? ta.toMillis() : 0, mb = tb ? tb.toMillis() : 0;
+      return mb - ma;
+    });
+    docs.forEach(function(d){
+      if(blockedChats.indexOf(d.id) >= 0) return;
+      var c = d.data();
+      var obj = {
+        id: d.id,
+        type: c.type || 'dm',
+        name: c.name || '',
+        colorVar: c.colorVar || '--c-blue',
+        cover: c.cover || null,
+        members: c.memberIds || [],
+        createdBy: c.createdBy || '',
+        lastMessage: c.lastMessage || '',
+        lastMessageAt: c.lastMessageAt || null
+      };
+      if(obj.type === 'group'){ groups[d.id] = obj; gm.push(d.id); }
+      else { contacts[d.id] = obj; cm.push(d.id); }
+    });
+    contactOrder = cm;
+    groupOrder = gm;
+    renderChatList();
+  }, function(err){
+    var wrap = document.getElementById('chatList');
+    if(wrap) wrap.innerHTML = '<div class="chat-item" style="padding:16px"><div style="color:var(--muted);font-size:12px;white-space:pre-wrap">' + escapeHTML(err.message || String(err)) + '</div></div>';
+    console.error(err);
+  });
+}
+
+function subscribeMyContacts(){
+  if(contactRefs){ contactRefs(); contactRefs = null; }
+  contactRefs = db.collection('users').doc(myUid).onSnapshot(function(doc){
+    var d = doc.data() || {};
+    myContacts = {};
+    (d.contacts || []).forEach(function(c){ if(c && c.uid) myContacts[c.uid] = c; });
+  });
+}
+
+function seedDemoUsersOnce(){
+  if(localStorage.getItem('nett_seeded')) return;
+  localStorage.setItem('nett_seeded', '1');
+  var demo = [
+    { name:'Parker', colorVar:'--c-red', email:'parker@nett.app' },
+    { name:'Henry',  colorVar:'--c-orange', email:'henry@nett.app' },
+    { name:'Edward', colorVar:'--c-yellow', email:'edward@nett.app' },
+    { name:'Sana',   colorVar:'--c-green', email:'sana@nett.app' },
+    { name:'Fares',  colorVar:'--c-blue',  email:'fares@nett.app' }
+  ];
+  demo.forEach(function(u){
+    db.collection('users').where('email','==',u.email).get().then(function(snap){
+      if(snap.empty){
+        db.collection('users').add({ name:u.name, colorVar:u.colorVar, email:u.email, contacts:[] });
+      }
+    }).catch(function(){});
+  });
+}
+
+function startApp(){
+  if(appStarted) return;
+  appStarted = true;
+  subscribeChats();
+  subscribeMyContacts();
+  seedDemoUsersOnce();
+  renderChatList();
+}
+
+function renderChatList(){
+  var wrap = document.getElementById('chatList');
+  var q = (document.getElementById('chatSearchInput').value||'').trim().toLowerCase();
+  wrap.innerHTML = '';
+  var list = groupOrder.map(function(g){ return 'g:'+g; }).concat(contactOrder.map(function(c){ return 'c:'+c; }));
+  list
+    .filter(function(key){
+      var id = key.slice(2);
+      var c = getChatObj(id);
+      if(!c) return false;
+      return (c.name + ' ' + (nicknames[id]||'')).toLowerCase().includes(q);
+    })
+    .forEach(function(key){
+      var g = key[0]==='g';
+      var id = key.slice(2);
+      var c = getChatObj(id);
+      var row = document.createElement('div');
+      row.className = 'chat-item';
+      row.onclick = function(){ if(suppressClick) return; openChat(id); };
+      row.innerHTML = avatarHTML(c.colorVar, displayName(id)[0], '', c.cover) + '<div class="chat-name">' + escapeHTML(displayName(id)) + '</div>';
+      if(!g) attachChatLongPress(row, id);
+      wrap.appendChild(row);
+    });
+}
+
+/* ========== FRIEND REQUEST ========== */
+function respondFriendRequest(accept){
+  document.getElementById('friendRequestBanner').classList.add('hidden');
+}
+
+/* ========== CHAT WINDOW ========== */
+var activeChatId = null;
+var editingIndex = null;
+
+function openChat(id){
+  activeChatId = id;
+  editingIndex = null;
+  ensureChat(id, function(){
+    renderChatHeader(id);
+    subscribeMessages(id);
+    renderMessages();
+    goTo('screen-chat');
+    setTimeout(function(){
+      document.getElementById('screen-settings').classList.remove('active');
+    }, 10);
+  });
+}
+
+function ensureChat(id, cb){
+  if(getChatObj(id)){ cb(); return; }
+  db.collection('chats').doc(id).get().then(function(d){
+    if(d.exists){
+      var c = d.data();
+      var obj = {
+        id: d.id, type: c.type || 'dm', name: c.name || '', colorVar: c.colorVar || '--c-blue',
+        cover: c.cover || null, members: c.memberIds || [], createdBy: c.createdBy || '',
+        lastMessage: c.lastMessage || '', lastMessageAt: c.lastMessageAt || null
+      };
+      if(obj.type === 'group'){ groups[d.id] = obj; if(groupOrder.indexOf(d.id)<0) groupOrder.unshift(d.id); }
+      else { contacts[d.id] = obj; if(contactOrder.indexOf(d.id)<0) contactOrder.unshift(d.id); }
+    }
+    cb();
+  }).catch(function(){ cb(); });
+}
+
+function renderChatHeader(id){
+  var c = getChatObj(id);
+  var topAv = document.getElementById('chatTopAvatar');
+  document.getElementById('chatTopName').textContent = displayName(id);
+  if(c && c.cover){
+    topAv.style.backgroundImage = 'url('+c.cover+')';
+    topAv.style.backgroundSize = 'cover';
+    topAv.style.backgroundPosition = 'center';
+    topAv.style.background = 'transparent';
+    topAv.textContent = '';
+  } else {
+    topAv.style.background = 'var(' + (c?c.colorVar:'--c-blue') + ')';
+    topAv.style.backgroundImage = 'none';
+    topAv.textContent = displayName(id)[0];
+  }
+}
+
+function subscribeMessages(id){
+  if(msgUnsub){ msgUnsub(); msgUnsub = null; }
+  if(!db || !myUid) return;
+  msgUnsub = db.collection('chats').doc(id).collection('messages')
+    .orderBy('createdAt')
+    .limitToLast(200)
+    .onSnapshot(function(snap){
+      var msgs = snap.docs.map(docToMsg);
+      chatMsgCache[id] = msgs;
+      syncReadState(msgs);
+      if(activeChatId === id) renderMessages();
+    }, function(err){
+      console.error(err);
+    });
+}
+
+function docToMsg(d){
+  var m = d.data();
+  return {
+    id: d.id,
+    from: m.fromUid === myUid ? 'me' : 'them',
+    fromUid: m.fromUid || '',
+    fromName: m.fromName || '',
+    text: m.text || '',
+    image: m.image || null,
+    createdAt: m.createdAt ? (m.createdAt.toMillis ? m.createdAt.toMillis() : 0) : 0,
+    edited: !!m.edited,
+    readBy: m.readBy || {},
+    delivered: !!m.delivered
+  };
+}
+
+function otherMemberIds(chatId){
+  var c = getChatObj(chatId);
+  return c ? (c.members||[]).filter(function(u){ return u && u !== myUid; }) : [];
+}
+
+function msgStatusFor(m, idx, total){
+  if(m.from !== 'me' || !m.delivered || m.edited) return '';
+  var others = otherMemberIds(activeChatId);
+  if(!others.length) return '';
+  var allRead = others.every(function(u){ return m.readBy && m.readBy[u]; });
+  if(allRead) return 'read';
+  if(idx === total - 1) return 'delivered';
+  return '';
+}
+
+function syncReadState(msgs){
+  if(!db || !myUid || !msgs.length) return;
+  var toMark = msgs.filter(function(m){
+    return m.fromUid && m.fromUid !== myUid && !(m.readBy && m.readBy[myUid]);
+  });
+  if(!toMark.length) return;
+  var batch = db.batch();
+  var col = db.collection('chats').doc(activeChatId).collection('messages');
+  toMark.forEach(function(m){ batch.update(col.doc(m.id), { ['readBy.'+myUid]: true }); });
+  batch.commit().catch(function(){});
+}
+
+/* ========== LONG PRESS: RENAME / BLOCK ========== */
+var menuContactId = null;
+var suppressClick = false;
+
+function attachChatLongPress(el, id){
+  var timer = null;
+  var start = function(){ timer = setTimeout(function(){ suppressClick = true; setTimeout(function(){ suppressClick = false; }, 700); openChatMenu(id); }, 550); };
+  var cancel = function(){ if(timer){ clearTimeout(timer); timer=null; } };
+  el.addEventListener('pointerdown', start);
+  el.addEventListener('pointerup', cancel);
+  el.addEventListener('pointerleave', cancel);
+  el.addEventListener('pointercancel', cancel);
+  el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+
+function openChatMenu(id){
+  menuContactId = id;
+  document.getElementById('chatMenuOverlay').classList.add('active');
+}
+function closeChatMenu(){
+  document.getElementById('chatMenuOverlay').classList.remove('active');
+  menuContactId = null;
+}
+function openRenameModal(){
+  document.getElementById('chatMenuOverlay').classList.remove('active');
+  document.getElementById('renameOverlay').classList.add('active');
+  var inp = document.getElementById('renameInput');
+  inp.value = menuContactId ? (nicknames[menuContactId] || '') : '';
+  setTimeout(function(){ inp.focus(); }, 50);
+}
+function closeRenameModal(){
+  document.getElementById('renameOverlay').classList.remove('active');
+}
+function saveRename(){
+  if(!menuContactId) return;
+  var val = document.getElementById('renameInput').value.trim();
+  if(val){ nicknames[menuContactId] = val; }
+  else { delete nicknames[menuContactId]; }
+  localStorage.setItem('nett_nicknames', JSON.stringify(nicknames));
+  closeRenameModal();
+  renderChatList();
+  if(activeChatId === menuContactId) renderChatHeader(menuContactId);
+}
+
+function openBlockConfirm(){
+  document.getElementById('chatMenuOverlay').classList.remove('active');
+  if(menuContactId){
+    document.getElementById('blockTitle').textContent = 'Block ' + displayName(menuContactId) + '?';
+    document.getElementById('blockText').textContent = 'You won\'t be able to message ' + displayName(menuContactId) + ' anymore.';
+  }
+  document.getElementById('blockOverlay').classList.add('active');
+}
+function closeBlockConfirm(){
+  document.getElementById('blockOverlay').classList.remove('active');
+}
+function blockUser(){
+  var id = menuContactId;
+  if(!id) return;
+  if(blockedChats.indexOf(id) < 0) blockedChats.push(id);
+  localStorage.setItem('nett_blocked', JSON.stringify(blockedChats));
+  closeBlockConfirm();
+  menuContactId = null;
+  if(activeChatId === id){
+    activeChatId = null;
+    if(msgUnsub){ msgUnsub(); msgUnsub = null; }
+    goTo('screen-chats');
+  }
+  renderChatList();
+}
+
+/* ========== GROUP CHAT ========== */
+var groupCoverUrl = null;
+var groupColorVar = '--c-blue';
+var groupSelected = {};
+
+function openGroupModal(){
+  groupCoverUrl = null;
+  groupColorVar = '--c-blue';
+  groupSelected = {};
+  document.getElementById('groupNameInput').value = '';
+  document.getElementById('groupCoverImg').style.display = 'none';
+  document.getElementById('groupCoverLetter').style.display = 'none';
+  document.getElementById('groupCoverIcon').style.display = 'flex';
+  document.getElementById('groupCoverAvatar').style.background = 'var(--accent)';
+  renderGroupSwatches();
+  renderGroupMembers();
+  document.getElementById('groupOverlay').classList.add('active');
+}
+function closeGroupModal(){
+  document.getElementById('groupOverlay').classList.remove('active');
+}
+
+function renderGroupSwatches(){
+  var wrap = document.getElementById('groupSwatches');
+  wrap.innerHTML = '';
+  colorOptions.forEach(function(cv){
+    var el = document.createElement('div');
+    el.className = 'swatch' + (cv===groupColorVar?' selected':'');
+    el.style.background = 'var('+cv+')';
+    el.onclick = function(){
+      wrap.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('selected'); });
+      el.classList.add('selected');
+      groupColorVar = cv;
+      if(!groupCoverUrl) document.getElementById('groupCoverAvatar').style.background = 'var('+cv+')';
+    };
+    wrap.appendChild(el);
+  });
+}
+
+function renderGroupMembers(){
+  var wrap = document.getElementById('groupMembersList');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  Object.keys(myContacts).forEach(function(uid){
+    var c = myContacts[uid];
+    var row = document.createElement('div');
+    row.className = 'gm-member';
+    row.onclick = function(){
+      groupSelected[uid] = !groupSelected[uid];
+      row.classList.toggle('checked', !!groupSelected[uid]);
+    };
+    row.innerHTML = avatarHTML(c.colorVar, c.name[0], 'sm') +
+      '<div class="user-name">'+escapeHTML(c.name)+'</div>' +
+      '<div class="gm-member-check"><i class="fa-solid fa-check"></i></div>';
+    wrap.appendChild(row);
+  });
+}
+
+function updateGroupCoverLetter(){
+  if(groupCoverUrl) return;
+  var val = document.getElementById('groupNameInput').value.trim();
+  var letterEl = document.getElementById('groupCoverLetter');
+  var iconEl = document.getElementById('groupCoverIcon');
+  if(val){
+    letterEl.textContent = val[0].toUpperCase();
+    letterEl.style.display = 'flex';
+    iconEl.style.display = 'none';
+  } else {
+    letterEl.style.display = 'none';
+    iconEl.style.display = 'flex';
+  }
+}
+function handleGroupCoverUpload(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    groupCoverUrl = ev.target.result;
+    var img = document.getElementById('groupCoverImg');
+    img.src = groupCoverUrl;
+    img.style.display = 'block';
+    document.getElementById('groupCoverIcon').style.display = 'none';
+    document.getElementById('groupCoverLetter').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function createGroup(){
+  var name = document.getElementById('groupNameInput').value.trim();
+  if(!name || !db) return;
+  var gid = 'g' + Date.now();
+  var memberIds = [myUid].concat(Object.keys(groupSelected));
+  var finish = function(coverUrl){
+    db.collection('chats').doc(gid).set({
+      type: 'group',
+      name: name,
+      colorVar: groupColorVar,
+      cover: coverUrl,
+      memberIds: memberIds,
+      createdBy: myUid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastMessage: '',
+      lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      closeGroupModal();
+    }).catch(function(){ alert('Could not create group'); });
+  };
+  var cover = groupCoverUrl;
+  if(cover && cover.indexOf('data:') === 0){
+    resizeImageDataUrl(cover, 512, 0.82).then(finish);
+  } else {
+    finish(cover);
+  }
+}
+
+/* ========== CALL (AGORA RTC) ========== */
+var callTimer = null;
+var callSeconds = 0;
+var callMode = 'audio';
+var rtc = { client:null, localAudio:null, localVideo:null, handlers:null };
+
+function callIsGroup(){
+  var g = groups[activeChatId];
+  if(g) return true;
+  var c = contacts[activeChatId];
+  return !!(c && c.type === 'group');
+}
+function callPeers(){
+  var c = getChatObj(activeChatId);
+  if(!c) return [];
+  var ids = (c.members || []).filter(function(u){ return u !== myUid; });
+  return ids.map(function(uid){
+    return myContacts[uid] ? myContacts[uid] : { uid:uid, name:uid.slice(0,6), colorVar:'--c-blue' };
+  });
+}
+
+function openCall(mode){
+  if(!activeChatId || !myUid) return;
+  if(!AGORA_APP_ID || AGORA_APP_ID.indexOf('PASTE') === 0){ alert('Paste your Agora App ID into AGORA_APP_ID.'); return; }
+  var c = getChatObj(activeChatId);
+  callMode = mode;
+  var screen = document.getElementById('callScreen');
+  screen.classList.toggle('video', mode === 'video');
+  screen.classList.add('active');
+  document.getElementById('callName').textContent = displayName(activeChatId);
+  var av = document.getElementById('callAvatar');
+  av.style.background = 'var(' + (c ? c.colorVar : '--c-blue') + ')';
+  av.textContent = displayName(activeChatId)[0];
+  var statusEl = document.getElementById('callStatus');
+  statusEl.textContent = callIsGroup() ? 'Calling ' + callPeers().length + ' people...' : 'Calling...';
+  document.getElementById('callTimer').textContent = '';
+  renderCallParticipants();
+  document.getElementById('callAudioControls').style.display = mode === 'video' ? 'none' : 'flex';
+  document.getElementById('callVideoControls').style.display = mode === 'video' ? 'flex' : 'none';
+  resetCallButtons();
+  var remote = document.getElementById('callRemoteVideo');
+  var local = document.getElementById('callLocalVideo');
+  if(mode === 'video'){
+    av.style.display = 'none';
+    remote.style.display = 'block';
+    local.style.display = 'block';
+  } else {
+    av.style.display = 'flex';
+    remote.style.display = 'none';
+    local.style.display = 'none';
+  }
+  callSeconds = 0;
+  joinCall(mode, statusEl);
+}
+
+function renderCallParticipants(){
+  var wrap = document.getElementById('callParticipants');
+  wrap.innerHTML = '';
+  if(!callIsGroup()){ wrap.style.display = 'none'; return; }
+  var partners = callPeers();
+  wrap.style.display = 'flex';
+  partners.slice(0, 4).forEach(function(p){
+    var el = document.createElement('div');
+    el.className = 'call-pip-icon';
+    el.style.background = 'var(' + p.colorVar + ')';
+    el.textContent = p.name[0];
+    wrap.appendChild(el);
+  });
+  var rest = partners.length - 4;
+  if(rest > 0){
+    var more = document.createElement('div');
+    more.className = 'call-pip-icon';
+    more.style.background = '#3a3a40';
+    more.textContent = '+' + rest;
+    wrap.appendChild(more);
+  }
+}
+
+async function joinCall(mode, statusEl){
+  try {
+    var client = AgoraRTC.createClient({ mode:'rtc', codec:'vp8' });
+    rtc.client = client;
+    rtc.handlers = {
+      published: async function(user, mediaType){
+        await client.subscribe(user, mediaType);
+        if(mediaType === 'audio' && user.audioTrack) user.audioTrack.play();
+        if(mediaType === 'video'){
+          var el = getRemoteVideoEl(user.uid);
+          if(user.videoTrack) user.videoTrack.play(el);
+          el.style.display = 'block';
+        }
+        updateCallParticipants();
+      },
+      unpublished: function(user, mediaType){
+        if(mediaType === 'video'){
+          var el = document.getElementById('remote-video-' + user.uid);
+          if(el) el.style.display = 'none';
+        }
+        updateCallParticipants();
+      },
+      left: function(user){
+        var el = document.getElementById('remote-video-' + user.uid);
+        if(el) el.remove();
+        updateCallParticipants();
+      }
+    };
+    client.on('user-published', rtc.handlers.published);
+    client.on('user-unpublished', rtc.handlers.unpublished);
+    client.on('user-left', rtc.handlers.left);
+
+    await client.join(AGORA_APP_ID, 'nett_' + activeChatId, AGORA_TOKEN || null, myUid);
+    rtc.localAudio = await AgoraRTC.createMicrophoneAudioTrack();
+    await client.publish([rtc.localAudio]);
+    if(mode === 'video'){
+      rtc.localVideo = await AgoraRTC.createCameraVideoTrack();
+      rtc.localVideo.play('callLocalVideo');
+      await client.publish([rtc.localVideo]);
+    }
+    statusEl.textContent = 'Connected';
+    var start = Date.now();
+    callTimer = setInterval(function(){
+      callSeconds = Math.floor((Date.now() - start) / 1000);
+      var m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+      var s = String(callSeconds % 60).padStart(2, '0');
+      document.getElementById('callTimer').textContent = m + ':' + s;
+    }, 1000);
+    updateCallParticipants();
+  } catch(err){
+    console.error(err);
+    statusEl.textContent = 'Call failed: ' + (err && err.message ? err.message : 'unknown error');
+  }
+}
+
+function getRemoteVideoEl(uid){
+  var existing = document.getElementById('remote-video-' + uid);
+  if(existing) return existing;
+  var el = document.createElement('div');
+  el.id = 'remote-video-' + uid;
+  el.className = 'call-remote-stream';
+  el.style.display = 'none';
+  document.getElementById('callVideoArea').appendChild(el);
+  return el;
+}
+
+function updateCallParticipants(){
+  var wrap = document.getElementById('callParticipants');
+  if(!rtc.client){ wrap.style.display = 'none'; return; }
+  var uids = Object.keys(rtc.client.remoteUsers || {});
+  if(!uids.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.innerHTML = '';
+  wrap.style.display = 'flex';
+  uids.slice(0, 4).forEach(function(uid){
+    var p = null;
+    callPeers().forEach(function(x){ if(x.uid === uid) p = x; });
+    var el = document.createElement('div');
+    el.className = 'call-pip-icon';
+    el.style.background = 'var(' + (p ? p.colorVar : '--c-blue') + ')';
+    el.textContent = p ? p.name[0] : '?';
+    wrap.appendChild(el);
+  });
+}
+
+function endCall(wasMissed){
+  clearTimeout(callTimer);
+  clearInterval(callTimer);
+  callTimer = null;
+  var screen = document.getElementById('callScreen');
+  if(!wasMissed) document.getElementById('callTimer').textContent = '';
+  screen.classList.remove('active');
+  resetCallButtons();
+  leaveChannel();
+}
+
+function leaveChannel(){
+  if(rtc.localAudio){ try{ rtc.localAudio.close(); }catch(e){} }
+  if(rtc.localVideo){ try{ rtc.localVideo.close(); }catch(e){} }
+  rtc.localAudio = null;
+  rtc.localVideo = null;
+  if(rtc.client && rtc.handlers){
+    try{
+      rtc.client.off('user-published', rtc.handlers.published);
+      rtc.client.off('user-unpublished', rtc.handlers.unpublished);
+      rtc.client.off('user-left', rtc.handlers.left);
+    }catch(e){}
+    try{ rtc.client.leave(); }catch(e){}
+  }
+  rtc.client = null;
+  rtc.handlers = null;
+  document.querySelectorAll('.call-remote-stream').forEach(function(el){ el.remove(); });
+  var av = document.getElementById('callAvatar');
+  av.style.display = 'flex';
+  document.getElementById('callRemoteVideo').style.display = 'block';
+  document.getElementById('callLocalVideo').style.display = 'none';
+}
+
+function resetCallButtons(){
+  [['callMuteBtnA', 'fa-microphone'], ['callMuteBtnV', 'fa-microphone'],
+   ['callSpeakerBtnA', 'fa-volume-high'], ['callSpeakerBtnV', 'fa-volume-high'],
+   ['callVideoBtn', 'fa-video']].forEach(function(pair){
+    var btn = document.getElementById(pair[0]);
+    if(btn){ btn.className = 'call-ctl-btn'; var ic = btn.querySelector('i'); if(ic) ic.className = 'fa-solid ' + pair[1]; }
+  });
+  var vBtn = document.getElementById('callVideoBtn');
+  if(vBtn) vBtn.classList.remove('off');
+}
+
+function toggleCallMute(isAudio){
+  var pair = isAudio
+    ? ['callMuteBtnA', 'callMuteBtnV']
+    : ['callMuteBtnV', 'callMuteBtnA'];
+  var btn = document.getElementById(pair[0]);
+  var muted = btn.classList.toggle('off');
+  btn.querySelector('i').className = muted ? 'fa-solid fa-microphone-slash' : 'fa-solid fa-microphone';
+  var other = document.getElementById(pair[1]);
+  if(other){
+    other.classList.toggle('off', muted);
+    other.querySelector('i').className = muted ? 'fa-solid fa-microphone-slash' : 'fa-solid fa-microphone';
+  }
+  if(rtc.localAudio) rtc.localAudio.setEnabled(!muted);
+}
+
+function toggleCallVideo(){
+  var btn = document.getElementById('callVideoBtn');
+  var off = btn.classList.toggle('off');
+  btn.querySelector('i').className = off ? 'fa-solid fa-video-slash' : 'fa-solid fa-video';
+  if(rtc.localVideo) rtc.localVideo.setEnabled(!off);
+  if(off){
+    document.getElementById('callRemoteVideo').style.display = 'none';
+    document.getElementById('callLocalVideo').style.display = 'none';
+    document.getElementById('callAvatar').style.display = 'flex';
+  } else {
+    document.getElementById('callRemoteVideo').style.display = 'block';
+    document.getElementById('callLocalVideo').style.display = 'block';
+    document.getElementById('callAvatar').style.display = 'none';
+  }
+}
+
+function toggleCallSpeaker(isAudio){
+  var btn = isAudio
+    ? document.getElementById('callSpeakerBtnA')
+    : document.getElementById('callSpeakerBtnV');
+  var off = btn.classList.toggle('off');
+  btn.querySelector('i').className = off ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+}
+
+function renderMessages(){
+  if(!activeChatId) return;
+  var msgs = chatMsgCache[activeChatId] || [];
+  var wrap = document.getElementById('messages');
+  wrap.innerHTML = '';
+  var topInfo = document.getElementById('chatTopInfo');
+  if(topInfo) topInfo.style.visibility = 'visible';
+  msgs.forEach(function(m, i){
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + m.from;
+    if(m.from === 'me' && i === editingIndex){
+      row.innerHTML = '<div class="bubble editing"><input id="editInput" value="'+escapeAttr(m.text)+'"></div>';
+      wrap.appendChild(row);
+      var inp = row.querySelector('#editInput');
+      inp.focus(); inp.select();
+      inp.addEventListener('keydown', function(e){
+        if(e.key==='Enter') commitEdit(inp.value);
+        if(e.key==='Escape'){ editingIndex=null; renderMessages(); }
+      });
+      inp.addEventListener('blur', function(){ commitEdit(inp.value); });
+      return;
+    }
+    var status = msgStatusFor(m, i, msgs.length);
+    var statusHTML = status
+      ? '<div class="msg-status '+(status==='read'?'read':'')+'">'+(status==='read'?'Read':'Delivered')+'</div>'
+      : '';
+    var contentHTML = m.image
+      ? '<div class="bubble"><img src="'+escapeAttr(m.image)+'" class="msg-image" alt=""></div>'
+      : '<div class="bubble">'+escapeHTML(m.text)+'</div>';
+    var fromNameHTML = (m.from === 'them' && getChatObj(activeChatId) && getChatObj(activeChatId).type === 'group')
+      ? '<div class="msg-author">'+escapeHTML(m.fromName)+'</div>'
+      : '';
+    var editedHTML = (m.edited && !m.image) ? '<div class="msg-edited">Edited</div>' : '';
+    row.innerHTML = fromNameHTML + contentHTML + editedHTML + statusHTML;
+    wrap.appendChild(row);
+    if(m.from==='me' && !m.image) attachLongPress(row.querySelector('.bubble'), i);
+  });
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function commitEdit(newVal){
+  if(!activeChatId || editingIndex===null || !db) return;
+  var msgs = chatMsgCache[activeChatId];
+  if(!msgs || !msgs[editingIndex]) return;
+  var m = msgs[editingIndex];
+  var val = newVal.trim();
+  if(val){
+    var data = { text: val };
+    if(m.text !== val) data.edited = true;
+    db.collection('chats').doc(activeChatId).collection('messages').doc(m.id).update(data).catch(function(){});
+    m.text = val;
+    m.edited = !!(data.edited);
+  }
+  editingIndex = null;
+  renderMessages();
+}
+
+function attachLongPress(el, index){
+  var timer = null;
+  var start = function(){ timer = setTimeout(function(){ editingIndex=index; renderMessages(); }, 550); };
+  var cancel = function(){ if(timer){ clearTimeout(timer); timer=null; } };
+  el.addEventListener('pointerdown', start);
+  el.addEventListener('pointerup', cancel);
+  el.addEventListener('pointerleave', cancel);
+  el.addEventListener('pointercancel', cancel);
+  el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+
+function escapeHTML(str){ var d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+function escapeAttr(str){ return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+function sendMessage(){
+  var input = document.getElementById('chatInput');
+  var text = input.value.trim();
+  if(!text || !activeChatId || !db) return;
+  if(!getChatObj(activeChatId)) return;
+  input.value = '';
+  var col = db.collection('chats').doc(activeChatId).collection('messages');
+  col.add({
+    fromUid: myUid,
+    fromName: myProfile.name || myUid,
+    text: text,
+    image: null,
+    delivered: true,
+    edited: false,
+    readBy: {},
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(){});
+  db.collection('chats').doc(activeChatId).update({
+    lastMessage: text,
+    lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(){});
+}
+
+function handleChatUpload(e){
+  var file = e.target.files[0];
+  if(!file || !activeChatId || !db) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    resizeImageDataUrl(ev.target.result, 1200, 0.82).then(function(bigUrl){
+      db.collection('chats').doc(activeChatId).collection('messages').add({
+        fromUid: myUid,
+        fromName: myProfile.name || myUid,
+        text: '',
+        image: bigUrl,
+        delivered: true,
+        edited: false,
+        readBy: {},
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function(){});
+      db.collection('chats').doc(activeChatId).update({
+        lastMessage: 'Photo',
+        lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function(){});
+    }).catch(function(){ alert('Image upload failed'); });
+    e.target.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ========== SEARCH / ADD FRIENDS ========== */
+function renderUserList(filter){
+  var wrap = document.getElementById('userList');
+  wrap.innerHTML = '';
+  if(!db || !myUid){ return; }
+  var q = (filter || '').trim().toLowerCase();
+  var query = db.collection('users');
+  if(q){
+    query = query.orderBy('name').startAt(q).endAt(q + '\uf8ff').limit(20);
+  } else {
+    query = query.limit(20);
+  }
+  query.get().then(function(snap){
+    snap.docs.forEach(function(d){
+      if(d.id === myUid) return;
+      var u = d.data() || {};
+      var isAdded = !!myContacts[d.id];
+      var row = document.createElement('div');
+      row.className = 'user-row';
+      row.innerHTML = avatarHTML(u.colorVar || '--c-blue', (u.name || '?')[0], 'sm') +
+        '<div class="user-name">' + escapeHTML(u.name || 'Unknown') + '</div>' +
+        '<div class="add-btn">' +
+          (isAdded ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-user-plus"></i>') +
+        '</div>';
+      var btn = row.querySelector('.add-btn');
+      btn.classList.toggle('added', isAdded);
+      btn.onclick = function(ev){
+        ev.stopPropagation();
+        if(isAdded){
+          removeContact(d.id);
+          isAdded = false;
+          btn.classList.remove('added');
+          btn.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
+        } else {
+          addContact(d.id, u);
+          isAdded = true;
+          btn.classList.add('added');
+          btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+          getOrCreateDM(d.id, u);
+        }
+      };
+      row.onclick = function(){ getOrCreateDM(d.id, u); };
+      wrap.appendChild(row);
+    });
+  }).catch(function(err){
+    var row = document.createElement('div');
+    row.className = 'user-row';
+    row.innerHTML = '<div class="user-name" style="color:var(--muted)">' + escapeHTML(err.message) + '</div>';
+    wrap.appendChild(row);
+  });
+}
+
+function addContact(uid, u){
+  db.collection('users').doc(myUid).update({
+    contacts: firebase.firestore.FieldValue.arrayUnion({ uid: uid, name: u.name, colorVar: u.colorVar || '--c-blue' })
+  }).catch(function(){});
+}
+function removeContact(uid){
+  var cur = myContacts[uid];
+  if(cur){
+    db.collection('users').doc(myUid).update({
+      contacts: firebase.firestore.FieldValue.arrayRemove(cur)
+    }).catch(function(){});
+  }
+}
+function getOrCreateDM(otherUid, other){
+  if(!myUid) return;
+  var a = [myUid, otherUid].sort();
+  var chatId = 'dm_' + a[0] + '_' + a[1];
+  db.collection('chats').doc(chatId).get().then(function(d){
+    if(!d.exists){
+      db.collection('chats').doc(chatId).set({
+        type: 'dm',
+        memberIds: [myUid, otherUid],
+        name: other.name || otherUid,
+        colorVar: other.colorVar || '--c-blue',
+        createdBy: myUid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        lastMessage: '',
+        lastMessageAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  }).then(function(){
+    openChat(chatId);
+  }).catch(function(err){ console.error(err); });
+}
+
+/* ========== SETTINGS EXPAND ========== */
+function toggleExpand(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('active');
+}
+function saveEmail(){
+  var email = document.getElementById('newEmailInput').value.trim();
+  if(email){
+    document.getElementById('settingsEmail').textContent = email;
+    document.getElementById('settingsEmailDisplay').textContent = email;
+    toggleExpand('emailExpand');
+  }
+}
+function savePassword(){ toggleExpand('passwordExpand'); }
+</script>
+</body>
+</html>
